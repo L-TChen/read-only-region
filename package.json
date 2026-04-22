@@ -1,0 +1,69 @@
+{
+  "name": "read-only-region",
+  "displayName": "Read Only Region",
+  "description": "Protect selected text regions in the editor by reverting edits that touch them.",
+  "version": "0.0.1",
+  "publisher": "local",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:readOnlyRegion.protectSelection",
+    "onCommand:readOnlyRegion.clearSelection",
+    "onCommand:readOnlyRegion.clearAll"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "readOnlyRegion.protectSelection",
+        "title": "Read Only Region: Protect Selection"
+      },
+      {
+        "command": "readOnlyRegion.clearSelection",
+        "title": "Read Only Region: Clear Protection in Selection"
+      },
+      {
+        "command": "readOnlyRegion.clearAll",
+        "title": "Read Only Region: Clear All Protected Regions"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "readOnlyRegion.protectSelection",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "readOnlyRegion.clearSelection",
+          "when": "editorTextFocus"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "readOnlyRegion.protectSelection"
+        },
+        {
+          "command": "readOnlyRegion.clearSelection"
+        },
+        {
+          "command": "readOnlyRegion.clearAll"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package:vsix": "npm run compile && vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.10",
+    "@types/vscode": "^1.90.0",
+    "@vscode/vsce": "^3.9.1",
+    "typescript": "^5.5.4"
+  }
+}
