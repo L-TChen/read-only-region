@@ -163,9 +163,7 @@ async function handleDocumentChange(event: vscode.TextDocumentChangeEvent): Prom
   }
 
   state.applyingRevert = true;
-  const edit = new vscode.WorkspaceEdit();
-  edit.replace(document.uri, entireDocumentRange(document), nextText);
-  const applied = await vscode.workspace.applyEdit(edit);
+  const applied = await applyRestoreEdit(document, nextText);
   if (!applied) {
     state.applyingRevert = false;
     void vscode.window.showWarningMessage("Read Only Region could not restore the protected text.");
@@ -213,6 +211,25 @@ function refreshDecorations(document: vscode.TextDocument): void {
       editor.setDecorations(protectedDecoration, decorations);
     }
   }
+}
+
+async function applyRestoreEdit(document: vscode.TextDocument, nextText: string): Promise<boolean> {
+  const matchingEditor = vscode.window.visibleTextEditors.find((editor) => (
+    editor.document.uri.toString() === document.uri.toString()
+  ));
+
+  if (matchingEditor) {
+    return matchingEditor.edit((editBuilder) => {
+      editBuilder.replace(entireDocumentRange(document), nextText);
+    }, {
+      undoStopBefore: false,
+      undoStopAfter: false
+    });
+  }
+
+  const edit = new vscode.WorkspaceEdit();
+  edit.replace(document.uri, entireDocumentRange(document), nextText);
+  return vscode.workspace.applyEdit(edit);
 }
 
 function toOffsetRange(document: vscode.TextDocument, selection: vscode.Selection): OffsetRange {

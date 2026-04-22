@@ -86,4 +86,4 @@ To remove protection from a region:
 
 - Protection is stored in memory for the current VS Code session.
 - Because the behavior is implemented after the edit event, a blocked edit may briefly appear before being reverted.
-- Undo history is still managed by VS Code, so protected-region reverts may add extra undo steps depending on the edit.
+- Undo history is still managed by VS Code. The extension tries to minimize extra undo-stack noise, but it cannot fully remove corrective reverts from history in all cases.
